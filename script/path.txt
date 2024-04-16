@@ -1,0 +1,2 @@
+file user@192.168.0.104 /home/user/file /home/rubin/script/backup/
+dumpdb user@192.168.0.104: /tmp/ mydemodb /home/rubin/script/backup/

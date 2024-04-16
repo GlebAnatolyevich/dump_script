@@ -1,0 +1,52 @@
+#!/usr/bin/python3
+from datetime import date
+import os
+
+#Путь до файла с пустями
+path_file="path.txt"
+#Дата в формате дд-мм-гггг
+current_date = date.today()
+
+
+def read_path(path_file):
+    # получим объект файла
+    file1 = open(path_file, "r")
+    while True:
+        # считываем строку
+        line = file1.readline()
+        # прерываем цикл, если строка пустая
+        if not line:
+            break
+        # выводим строку
+        #print(line.strip())
+        main_backup(line.strip())
+        # закрываем файл
+    file1.close
+
+def archiving_file(reg):
+
+    # ssh user@192.168.0.104 tar -cPzvf /tmp/2024-04-16_file.tar.gz /home/user/file/
+    arh='ssh '+reg[1]+' tar -cPzvf /tmp/'+str(current_date)+'_'+reg[1]+'.tar.gz ' + reg[2]
+    #print(arh)
+    os.system(arh)
+    scp_file_dump(reg)
+
+def scp_file_dump(reg):
+    if reg[0] == "file":
+        scp = 'scp ' + reg[1]+':' + '/tmp/' + str(current_date) + '_' + reg[1] + '.tar.gz ' + reg[3]
+        os.system(scp)
+    elif reg[0] == "dumpdb":
+        scp = 'scp ' + reg[1] + reg[2] + str(current_date) + '_' + reg[3] + '.sql.zip' + ' ' + reg[4]
+        os.system(scp)
+
+def main_backup(where_line_path):
+
+    reg=where_line_path.split()
+    if reg[0] == "dumpdb":
+        scp_file_dump(reg)
+    elif reg[0] == "file":
+        archiving_file(reg)
+    else: print("Error")
+
+
+read_path(path_file)
